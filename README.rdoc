@@ -16,7 +16,7 @@ This version uses all class methods and a configure method to initialize options
 
     require 'aws_cf_signer'
 
-    AWS::CloudFront::Signer.configure! "#{Rails.root}/config/pk-APKAIKURNAUNR2BASGMA.pem"
+    AWS::CloudFront::Signer.configure! "#{Rails.root}/config/pk-APKAIKURNAUNR2BDSFDMA.pem"
 
 == Usage
 
