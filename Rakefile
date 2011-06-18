@@ -9,7 +9,7 @@ begin
     gem.description = %Q{Small gem for signing AWS CloudFront URLs given a AWS key_pair_id and pem file. Read more here: http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html}
     gem.email = "dylan.vaughn@stlondemand.com"
     gem.homepage = "http://github.com/stlondemand/aws_cf_signer"
-    gem.authors = ["Dylan Vaughn"]
+    gem.authors = ["Dylan Vaughn", "Anthony Bouch"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     gem.add_development_dependency "yard", ">= 0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
