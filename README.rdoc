@@ -1,6 +1,6 @@
 = aws_cf_signer
 
-A port of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer signing gem.
+A port of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer 
 
 * http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html
 
@@ -48,7 +48,7 @@ This version uses all class methods and a configure method to initialize options
   url = AWS::CloudFront::Signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
 
-== Note on Patches/Pull Requests
+== Note on Patches/Pull Requests (from Dylan's original repository)
  
 * Fork the project.
 * Make your feature addition or bug fix.
