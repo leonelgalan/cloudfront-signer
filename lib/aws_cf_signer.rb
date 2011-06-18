@@ -12,13 +12,12 @@ module AWS
 
             # Configure the signing class. Call this from an initializer. 
             #----------------------------------------------------------------------------
-            def self.configure!(pem_path, key_pair_id = nil, default_expires = Time.now + 3600, html_escape = true)
-
+            def self.configure!(pem_path, options = {})
                 @@pem_path = pem_path
-                @@default_expires = default_expires
-                @@html_escape = html_escape
+                @@default_expires = options[:default_expires] || Time.now + 3600
+                @@html_escape = options[:html_escape] || true
                 @@key = OpenSSL::PKey::RSA.new(File.readlines(@@pem_path).join(""))
-                @@key_pair_id = key_pair_id ? key_pair_id : extract_key_pair_id(@@pem_path)
+                @@key_pair_id = options[:key_pair_id] || extract_key_pair_id(@@pem_path)
                 unless @@key_pair_id
                     raise ArgumentError.new("key_pair_id couldn't be inferred from #{@@pem_path} - please pass in explicitly")
                 end
