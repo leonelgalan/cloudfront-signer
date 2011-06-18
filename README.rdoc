@@ -1,50 +1,52 @@
 = aws_cf_signer
 
-Small gem for signing AWS CloudFront URLs given a AWS key_pair_id and pem file.  Read more here:
+A port of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer signing gem.
 
 * http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html
 
+This version uses all class methods and a configure method to initialize options.
+
 == Installation
 
-  gem install aws_cf_signer
+  The original gem was published - use gem install aws_cf_signer to install that version.
+  For this version place a copy of aws_cf_signer in your lib directory.
+  Then create an initializer that sets the pem path and optionally overrides defaults.
+
+  e.g. AWS::CloudFront::Signer.configure! mypempath.pem, :expires => Time.now + 3600
+
+
 
 == Usage
 
-  # Pass in path to the private CloudFront key from AWS
-  signer = AwsCfSigner.new('/path/to/my/pk-1234567890.pem')
+  # Call the class sign method with optional policy settings.
 
-  # If the key filename doesn't contain the key_pair_id (as it usually does from AWS), pass that in as the second arg
-  signer = AwsCfSigner.new('/path/to/my/private-key.pem', '1234567890')
+  AWS::CloudFront::Signer.sign 'path/to/my/content'
 
-  # expiration date is required
-  # See Example Canned Policy at above AWS doc link
-  url = signer.sign('http://d604721fxaaqy9.cloudfront.net/horizon.jpg?large=yes&license=yes', :ending => 'Sat, 14 Nov 2009 22:20:00 GMT')
+  or 
 
-  # You can also use a Time object
-  url = signer.sign('http://d604721fxaaqy9.cloudfront.net/horizon.jpg?large=yes&license=yes', :ending => Time.now + 3600)
-
+  AWS::CloudFront::Signer.sign 'path/to/my/content', :expires => Time.now + 600
+  
   # Custom Policies
 
   # See Example Custom Policy 1 at above AWS doc link
-  url = signer.sign('http://d604721fxaaqy9.cloudfront.net/training/orientation.avi',
-    :ending   => 'Sat, 14 Nov 2009 22:20:00 GMT',
+  url = AWS::CloudFront::Signer.sign('http://d604721fxaaqy9.cloudfront.net/training/orientation.avi',
+    :expires   => 'Sat, 14 Nov 2009 22:20:00 GMT',
     :resource => 'http://d604721fxaaqy9.cloudfront.net/training/*',
     :ip_range => '145.168.143.0/24'
   )
 
   # See Example Custom Policy 2 at above AWS doc link
-  url = signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
+  url = AWS::CloudFront::Signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
     :starting => 'Thu, 30 Apr 2009 06:43:10 GMT',
-    :ending   => 'Fri, 16 Oct 2009 06:31:56 GMT',
+    :expires   => 'Fri, 16 Oct 2009 06:31:56 GMT',
     :resource => 'http://*',
     :ip_range => '216.98.35.1/32'
   )
 
   # You can also pass in a path to a policy file
   # This will supersede any other policy options
-  url = signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
+  url = AWS::CloudFront::Signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
-See the test/test_aws_cf_signer.rb file for more examples.
 
 == Note on Patches/Pull Requests
  
