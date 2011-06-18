@@ -9,12 +9,14 @@ This version uses all class methods and a configure method to initialize options
 == Installation
 
   The original gem was published - use gem install aws_cf_signer to install that version.
-  For this version place a copy of aws_cf_signer in your lib directory.
+  For this version place a copy of aws_cf_signer.rb in your lib directory.
   Then create an initializer that sets the pem path and optionally overrides defaults.
 
-  e.g. AWS::CloudFront::Signer.configure! mypempath.pem, :expires => Time.now + 3600
+  e.g. 
 
+    require 'aws_cf_signer'
 
+    AWS::CloudFront::Signer.configure! "#{Rails.root}/config/pk-APKAIKURNAUNR2BASGMA.pem"
 
 == Usage
 
