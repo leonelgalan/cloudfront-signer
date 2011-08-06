@@ -36,7 +36,7 @@ Seperate methods exist for safe signing of urls and stream paths, each of which 
 
   or 
 
-  AWS::CF::Signer.sign_url 'path/to/my/content', :expires => Time.now + 600
+  AWS::CF::Signer.sign_path 'path/to/my/content', :expires => Time.now + 600
 
 
   # Both sign_url and sign_path have 'safe' version that HTML encode the result allowing 
