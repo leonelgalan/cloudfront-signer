@@ -3,7 +3,7 @@
 require 'openssl'
 require 'time'
 require 'base64'
-require "aws-cf-signer/version"
+require "cloudfront-signer/version"
 
 module AWS
     module CF

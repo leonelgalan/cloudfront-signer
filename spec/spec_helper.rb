@@ -2,7 +2,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'rspec'
-require 'aws-cf-signer'
+require 'cloudfront-signer'
 
 def get_query_value(url, key)
     query_string = url.slice((url =~ /\?/) + 1..-1) 

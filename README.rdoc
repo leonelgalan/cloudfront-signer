@@ -1,4 +1,4 @@
-= aws-cf-signer
+= cloudfront-signer
 
 A fork of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer 
 
@@ -10,13 +10,16 @@ Seperate methods exist for safe signing of urls and stream paths, each of which 
 
 == Installation
 
-  The original gem was published - use gem install aws_cf_signer to install that version.
-  For this version place a copy of aws-cf-signer.rb in your lib directory.
+  The original gem was published as aws_cf_signer. Use gem install aws_cf_signer to install that version.
+
+  This gem has been publised as cloudfront-signer. Use gem install cloudfront-signer to install the gem. 
+  
+  Alternatively, place a copy of cloudfront-signer.rb in your lib directory.
   Then create an initializer that sets the pem path and optionally overrides defaults.
 
   e.g. 
 
-    require 'aws-cf-signer'
+    require 'cloudfront-signer'
 
     AWS::CF::Signer.configure! "#{Rails.root}/config/pk-APKAIKURNAUNR2BDSFDMA.pem"
 
@@ -39,7 +42,7 @@ Seperate methods exist for safe signing of urls and stream paths, each of which 
   AWS::CF::Signer.sign_path 'path/to/my/content', :expires => Time.now + 600
 
 
-  # Both sign_url and sign_path have 'safe' version that HTML encode the result allowing 
+  # Both sign_url and sign_path have 'safe' versions that HTML encode the result allowing 
   # signed paths or urls to be placed in HTML markup. The 'non'-safe versions can be used 
   # for placing signed urls or paths in JavaScript blocks or Flash params.
 
@@ -47,14 +50,14 @@ Seperate methods exist for safe signing of urls and stream paths, each of which 
   # Custom Policies
 
   # See Example Custom Policy 1 at above AWS doc link
-  url = AWS::CF::Signer.sign('http://d604721fxaaqy9.cloudfront.net/training/orientation.avi',
+  url = AWS::CF::Signer.sign_url('http://d604721fxaaqy9.cloudfront.net/training/orientation.avi',
     :expires   => 'Sat, 14 Nov 2009 22:20:00 GMT',
     :resource => 'http://d604721fxaaqy9.cloudfront.net/training/*',
     :ip_range => '145.168.143.0/24'
   )
 
   # See Example Custom Policy 2 at above AWS doc link
-  url = AWS::CF::Signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
+  url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
     :starting => 'Thu, 30 Apr 2009 06:43:10 GMT',
     :expires   => 'Fri, 16 Oct 2009 06:31:56 GMT',
     :resource => 'http://*',
@@ -63,7 +66,7 @@ Seperate methods exist for safe signing of urls and stream paths, each of which 
 
   # You can also pass in a path to a policy file
   # This will supersede any other policy options
-  url = AWS::CF::Signer.sign('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
+  url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
 
 == Note on Patches/Pull Requests (from Dylan's original repository)
@@ -87,4 +90,4 @@ Parts of signing code taken from a question on Stack Overflow asked by Ben Wisel
 
 == License
 
-aws-cf-signer is distributed under the MIT License, portions copyright © 2011 Dylan Vaughn, STL, Anthony Bouch
+cloudfront-signer is distributed under the MIT License, portions copyright © 2011 Dylan Vaughn, STL, Anthony Bouch
