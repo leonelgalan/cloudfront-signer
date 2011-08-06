@@ -1,6 +1,6 @@
 = aws-cf-signer
 
-A port of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer 
+A fork of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer 
 
 * http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html
 

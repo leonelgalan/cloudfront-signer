@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.email       = ["tony@58bits.com"]
   s.homepage    = "http://github.com/58bits/aws-cf-signer"
   s.summary     = %q{A gem to sign stream paths and urls for CloudFront private content.}
-  s.description = %q{A port of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer.}
+  s.description = %q{A fork of Dylan Vaughn's excellent signing gem - https://github.com/stlondemand/aws_cf_signer.}
 
   s.rubyforge_project = "aws-cf-signer"
 
