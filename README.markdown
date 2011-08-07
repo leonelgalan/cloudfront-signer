@@ -55,11 +55,12 @@ Both `sign_url` and `sign_path` have _safe_ versions that HTML encode the result
 ### Custom Policies
 
 See Example Custom Policy 1 at above AWS doc link
+
     url = AWS::CF::Signer.sign_url('http://d604721fxaaqy9.cloudfront.net/training/orientation.avi',
             :expires   => 'Sat, 14 Nov 2009 22:20:00 GMT',
             :resource => 'http://d604721fxaaqy9.cloudfront.net/training/*',
             :ip_range => '145.168.143.0/24'
-            )
+    )
 
 See Example Custom Policy 2 at above AWS doc link
     url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
@@ -67,9 +68,10 @@ See Example Custom Policy 2 at above AWS doc link
             :expires   => 'Fri, 16 Oct 2009 06:31:56 GMT',
             :resource => 'http://*',
             :ip_range => '216.98.35.1/32'
-            )
+    )
 
 You can also pass in a path to a policy file. This will supersede any other policy options
+
     url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
 
@@ -89,10 +91,10 @@ Attributions
 
 Parts of signing code taken from a question on Stack Overflow asked by Ben Wiseley, and answered by Blaz Lipuscek and Manual M:
 
-    * http://stackoverflow.com/questions/2632457/create-signed-urls-for-cloudfront-with-ruby)
-    * http://stackoverflow.com/users/315829/ben-wiseley
-    * http://stackoverflow.com/users/267804/blaz-lipuscek
-    * http://stackoverflow.com/users/327914/manuel-m
+* [http://stackoverflow.com/questions/2632457/create-signed-urls-for-cloudfront-with-ruby](http://stackoverflow.com/questions/2632457/create-signed-urls-for-cloudfront-with-ruby)
+* [http://stackoverflow.com/users/315829/ben-wiseley](http://stackoverflow.com/users/315829/ben-wiseley)
+* [http://stackoverflow.com/users/267804/blaz-lipuscek](http://stackoverflow.com/users/267804/blaz-lipuscek)
+* [http://stackoverflow.com/users/327914/manuel-m](http://stackoverflow.com/users/327914/manuel-m)
 
 License
 -------
