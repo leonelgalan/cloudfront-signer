@@ -63,6 +63,7 @@ See Example Custom Policy 1 at above AWS doc link
     )
 
 See Example Custom Policy 2 at above AWS doc link
+
     url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
             :starting => 'Thu, 30 Apr 2009 06:43:10 GMT',
             :expires   => 'Fri, 16 Oct 2009 06:31:56 GMT',
