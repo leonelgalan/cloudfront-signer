@@ -7,7 +7,7 @@ See Amazon docs for [Using a Signed URL to Serve Private Content](http://docs.am
 
 This version uses all class methods and a configure method to initialize options.
 
-Seperate helper methods exist for safe signing of urls and stream paths, each of which has slightly different requirements. For example, urls must not contain any spaces, whereas a stream path can. Also we might not want to html escape a url or path if it is being supplied to a JavaScript block or Flash element.
+Seperate helper methods exist for safe signing of urls and stream paths, each of which has slightly different requirements. For example, urls must not contain any spaces, whereas a stream path can. Also we might not want to html escape a url or path if it is being supplied to a JavaScript block or Flash object.
 
 Installation
 ------------
