@@ -136,7 +136,7 @@ module AWS
                 end
             end
 
-            
+
             # Private helper methods
             #----------------------------------------------------------------------------
             private
