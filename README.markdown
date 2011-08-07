@@ -76,8 +76,8 @@ You can also pass in a path to a policy file. This will supersede any other poli
     url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
 
-Note on Patches/Pull Requests (from Dylan's original repository)
-----------------------------------------------------------------
+Note on Patches/Pull Requests (verbatum from Dylan's original repository)
+-------------------------------------------------------------------------
 
 * Fork the project.
 * Make your feature addition or bug fix.
