@@ -60,7 +60,7 @@ module AWS
 
                 @key_pair_id = options[:key_pair_id] || extract_key_pair_id(key_path)
                 unless @key_pair_id
-                    raise ArgumentError.new("The Cloudfront signing key id could not be inferred from #{key_path}. Please supply the key pair id as a configuration arguemet.")
+                    raise ArgumentError.new("The Cloudfront signing key id could not be inferred from #{key_path}. Please supply the key pair id as a configuration argument.")
                 end
 
                 @default_expires = options[:default_expires] ? options[:default_expires] : 3600
