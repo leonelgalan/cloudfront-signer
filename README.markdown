@@ -26,7 +26,11 @@ e.g.
 
     require 'cloudfront-signer'
 
-    AWS::CF::Signer.configure! "#{Rails.root}/keys/pk-APKAIKURNAUNR2BDSFDMA.pem"
+    AWS::CF::Signer.configure do |config|
+      config.key_path = key_path
+      config.key_pair_id  = "XXYYZZ"
+      config.default_expires = 3600
+    end
 
 
 Usage
