@@ -108,7 +108,7 @@ module AWS
       #
       # Returns a Boolean value indicating that settings are present.
       def self.is_configured?
-        self.key_path && self.key_pair_id && private_key
+        (self.key_path.nil? || self.key_pair_id.nil? || private_key.nil?) ? false : true
       end
 
       # Public: Sign a url - encoding any spaces in the url before signing. CloudFront 
