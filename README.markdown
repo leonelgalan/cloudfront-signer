@@ -5,7 +5,7 @@ A fork and re-write of Dylan Vaughn's [signing gem](https://github.com/stlondema
 
 See Amazon docs for [Using a Signed URL to Serve Private Content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html)
 
-This version uses all class methods and a configure method to initialize options.
+This version uses all class methods and a configure method to set options.
 
 Seperate helper methods exist for safe signing of urls and stream paths, each of which has slightly different requirements. For example, urls must not contain any spaces, whereas a stream path can. Also we might not want to html escape a url or path if it is being supplied to a JavaScript block or Flash object.
 
