@@ -1,7 +1,7 @@
 cloudfront-signer
 =================
 
-A fork of Dylan Vaughn's [excellent signing gem](https://github.com/stlondemand/aws_cf_signer). 
+A fork and re-write of Dylan Vaughn's [signing gem](https://github.com/stlondemand/aws_cf_signer). 
 
 See Amazon docs for [Using a Signed URL to Serve Private Content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html)
 
@@ -80,15 +80,13 @@ You can also pass in a path to a policy file. This will supersede any other poli
     url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
 
-Note on Patches/Pull Requests (verbatum from Dylan's original repository)
+Patches/Pull Requests 
 -------------------------------------------------------------------------
 
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-(if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Add tests for it. 
+* Commit
 * Send me a pull request. Bonus points for topic branches.
 
 Attributions
