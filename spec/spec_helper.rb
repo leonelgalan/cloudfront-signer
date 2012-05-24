@@ -5,13 +5,13 @@ require 'rspec'
 require 'cloudfront-signer'
 
 def get_query_value(url, key)
-    query_string = url.slice((url =~ /\?/) + 1..-1) 
-    pairs = query_string.split('&')
-    pairs.each do |item|
-        if item.start_with?(key)
-            return item.split('=')[1]
-        end
+  query_string = url.slice((url =~ /\?/) + 1..-1) 
+  pairs = query_string.split('&')
+  pairs.each do |item|
+    if item.start_with?(key)
+      return item.split('=')[1]
     end
+  end
 end
 
 
