@@ -71,7 +71,7 @@ module AWS
 
         # Private: Provides an accessor to the RSA key value 
         #
-        # Returns an Integer value indicating the current setting
+        # Returns an RSA key pair.
         def private_key
           @key
         end
@@ -108,11 +108,7 @@ module AWS
       #
       # Returns a Boolean value indicating that settings are present.
       def self.is_configured?
-        if self.key_path && self.key_pair_id && private_key
-          return true
-        else
-          return false
-        end 
+        self.key_path && self.key_pair_id && private_key
       end
 
       # Public: Sign a url - encoding any spaces in the url before signing. CloudFront 
