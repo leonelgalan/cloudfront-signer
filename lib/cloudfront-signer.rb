@@ -151,7 +151,7 @@ module AWS
       # Returns a String
       def self.sign(subject, configuration_options = {}, policy_options = {})
 
-        raise "Configure using AWS::CF.Signer.configure! before signing." unless self.is_configured?
+        raise "Configure using AWS::CF::Signer.configure before signing." unless self.is_configured?
 
         # If the url or stream path already has a query string parameter - append to that.
         separator = subject =~ /\?/ ? '&' : '?'
