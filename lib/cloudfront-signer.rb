@@ -35,7 +35,19 @@ module AWS
         def key_path=(path)
           raise ArgumentError.new("The signing key could not be found at #{path}") unless File.exists?(path)
           @key_path = path
-          @key = OpenSSL::PKey::RSA.new(File.readlines(path).join(""))
+          self.key=(File.readlines(path).join(""))
+        end
+
+        # Public: Provides a configuration option to set the key directly as a string e.g. as an ENV var
+        #
+        # Examples
+        #
+        #   AWS::CF::Signer.configure do |config|
+        #     config.key = ENV.fetch('KEY')
+        #   end
+        # Returns nothing.
+        def key=(key)
+          @key = OpenSSL::PKey::RSA.new(key)
         end
 
         # Public: Provides an accessor to the key_path
@@ -94,7 +106,7 @@ module AWS
 
         yield self if block_given?
 
-        raise ArgumentError.new("You must supply the path to a PEM format RSA key pair.") unless self.key_path
+        raise ArgumentError.new("You must supply the path to a PEM format RSA key pair.") unless self.key_path || private_key
 
         unless @key_pair_id
           @key_pair_id = extract_key_pair_id(self.key_path)
@@ -108,7 +120,7 @@ module AWS
       #
       # Returns a Boolean value indicating that settings are present.
       def self.is_configured?
-        (self.key_path.nil? || self.key_pair_id.nil? || private_key.nil?) ? false : true
+        (self.key_pair_id.nil? || private_key.nil?) ? false : true
       end
 
       # Public: Sign a url - encoding any spaces in the url before signing. CloudFront

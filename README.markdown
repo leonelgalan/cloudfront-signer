@@ -16,13 +16,22 @@ This gem has been publised as `cloudfront-signer`. Use `gem install cloudfront-s
 
 Alternatively, place a copy of cloudfront-signer.rb (and the cloundfront-signer sub directory) in your lib directory.
 
-In either case the signing class must be configured - supplying the path to a signing key. Create the initializer by running:
+In either case the signing class must be configured - supplying the path to a signing key, or supplying the signing key directly as a string along with the `key_pair_id`. Create the initializer by running:
 
 ```
 bundle exec rails g cloudfront:install
 ```
 
 and customizing the resulting `config/initializers/cloudfront-signer.rb` file.
+
+### Generated `cloudfront-signer.rb`
+
+    AWS::CF::Signer.configure do |config|
+      config.key_path = '/path/to/keyfile.pem'
+      # config.key = ENV.fetch('PRIVATE_KEY') # key_path not required if key supplied directly
+      config.key_pair_id  = "XXYYZZ"
+      config.default_expires = 3600
+    end
 
 ## Usage
 
