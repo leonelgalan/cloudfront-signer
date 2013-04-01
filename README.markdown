@@ -1,6 +1,6 @@
 # cloudfront-signer
 
-A fork and re-write of Dylan Vaughn's [signing gem](https://github.com/stlondemand/aws_cf_signer). 
+A fork and re-write of Dylan Vaughn's [signing gem](https://github.com/stlondemand/aws_cf_signer).
 
 See Amazon docs for [Using a Signed URL to Serve Private Content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html)
 
@@ -12,7 +12,7 @@ Seperate helper methods exist for safe signing of urls and stream paths, each of
 
 The original gem was published as `aws_cf_signer`. Use `gem install aws_cf_signer` to install that version.
 
-This gem has been publised as `cloudfront-signer`. Use `gem install cloudfront-signer` to install this gem. 
+This gem has been publised as `cloudfront-signer`. Use `gem install cloudfront-signer` to install this gem.
 
 Alternatively, place a copy of cloudfront-signer.rb (and the cloundfront-signer sub directory) in your lib directory.
 
@@ -30,7 +30,7 @@ Call the class `sign_url` or `sign_path` method with optional policy settings.
 
     AWS::CF::Signer.sign_url 'http://mydomain/path/to/my/content'
 
-or 
+or
 
     AWS::CF::Signer.sign_url 'http://mydomain/path/to/my/content', :expires => Time.now + 600
 
@@ -38,7 +38,7 @@ Streaming paths can be signed with the `sign_path` method.
 
     AWS::CF::Signer.sign_path 'path/to/my/content'
 
-or 
+or
 
     AWS::CF::Signer.sign_path 'path/to/my/content', :expires => Time.now + 600
 
@@ -70,11 +70,11 @@ You can also pass in a path to a policy file. This will supersede any other poli
     url = AWS::CF::Signer.sign_url('http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz', :policy_file => '/path/to/policy/file.txt')
 
 
-## Patches/Pull Requests 
+## Patches/Pull Requests
 
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. 
+* Add tests for it.
 * Commit
 * Send me a pull request. Bonus points for topic branches.
 
