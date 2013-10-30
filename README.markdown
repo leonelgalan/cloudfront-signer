@@ -1,6 +1,6 @@
 # cloudfront-signer
 
-* See the [ChangeLog](https://github.com/58bits/cloudfront-signer/blob/master/ChangeLog.markdown) for details of this release.
+See the [ChangeLog](https://github.com/58bits/cloudfront-signer/blob/master/ChangeLog.markdown) for details of this release.
 
 A fork and re-write of Dylan Vaughn's [signing gem](https://github.com/stlondemand/aws_cf_signer).
 
