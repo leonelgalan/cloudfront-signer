@@ -1,5 +1,7 @@
 # cloudfront-signer
 
+* See the [ChangeLog](https://github.com/58bits/cloudfront-signer/blob/master/ChangeLog.markdown) for details of this release.
+
 A fork and re-write of Dylan Vaughn's [signing gem](https://github.com/stlondemand/aws_cf_signer).
 
 See Amazon docs for [Using a Signed URL to Serve Private Content](http://docs.amazonwebservices.com/AmazonCloudFront/latest/DeveloperGuide/index.html?PrivateContent.html)
