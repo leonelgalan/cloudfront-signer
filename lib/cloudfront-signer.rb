@@ -10,8 +10,8 @@ module AWS
     class Signer
       # Public non-inheritable class accessors
       class << self
-        
-        # Public: Provides a configuration option to set the key_pair_id if it has not 
+
+        # Public: Provides a configuration option to set the key_pair_id if it has not
         # been inferred from the key_path
         #
         # Examples
@@ -23,7 +23,7 @@ module AWS
         # Returns a String value indicating the current setting
         attr_accessor :key_pair_id
 
-        # Public: Provides a configuration option that sets the key_path 
+        # Public: Provides a configuration option that sets the key_path
         #
         # Examples
         #
@@ -35,10 +35,22 @@ module AWS
         def key_path=(path)
           raise ArgumentError.new("The signing key could not be found at #{path}") unless File.exists?(path)
           @key_path = path
-          @key = OpenSSL::PKey::RSA.new(File.readlines(path).join(""))
+          self.key=(File.readlines(path).join(""))
         end
 
-        # Public: Provides an accessor to the key_path 
+        # Public: Provides a configuration option to set the key directly as a string e.g. as an ENV var
+        #
+        # Examples
+        #
+        #   AWS::CF::Signer.configure do |config|
+        #     config.key = ENV.fetch('KEY')
+        #   end
+        # Returns nothing.
+        def key=(key)
+          @key = OpenSSL::PKey::RSA.new(key)
+        end
+
+        # Public: Provides an accessor to the key_path
         #
         # Returns a String value indicating the current setting
         def key_path
@@ -59,7 +71,7 @@ module AWS
           @default_expires = value
         end
 
-        # Public: Provides an accessor to the default_expires value 
+        # Public: Provides an accessor to the default_expires value
         #
         # Returns an Integer value indicating the current setting
         def default_expires
@@ -69,7 +81,7 @@ module AWS
 
         private
 
-        # Private: Provides an accessor to the RSA key value 
+        # Private: Provides an accessor to the RSA key value
         #
         # Returns an RSA key pair.
         def private_key
@@ -94,30 +106,30 @@ module AWS
 
         yield self if block_given?
 
-        raise ArgumentError.new("You must supply the path to a PEM format RSA key pair.") unless self.key_path
+        raise ArgumentError.new("You must supply the path to a PEM format RSA key pair.") unless self.key_path || private_key
 
         unless @key_pair_id
           @key_pair_id = extract_key_pair_id(self.key_path)
-          raise ArgumentError.new("The Cloudfront signing key id could not be inferred from #{self.key_path}. Please supply the key pair id as a configuration argument.") unless @key_pair_id 
+          raise ArgumentError.new("The Cloudfront signing key id could not be inferred from #{self.key_path}. Please supply the key pair id as a configuration argument.") unless @key_pair_id
         end
 
       end
 
-      # Public: Provides a configuration check method which tests to see 
+      # Public: Provides a configuration check method which tests to see
       # that the key_path, key_pair_id and private key values have all been set.
       #
       # Returns a Boolean value indicating that settings are present.
       def self.is_configured?
-        (self.key_path.nil? || self.key_pair_id.nil? || private_key.nil?) ? false : true
+        (self.key_pair_id.nil? || private_key.nil?) ? false : true
       end
 
-      # Public: Sign a url - encoding any spaces in the url before signing. CloudFront 
+      # Public: Sign a url - encoding any spaces in the url before signing. CloudFront
       # stipulates that signed URLs must not contain spaces (as opposed to stream
-      # paths/filenames which CAN contain spaces). 
+      # paths/filenames which CAN contain spaces).
       #
-      # Returns a String 
-      def self.sign_url(subject, policy_options = {}) 
-        self.sign(subject, {:remove_spaces => true}, policy_options) 
+      # Returns a String
+      def self.sign_url(subject, policy_options = {})
+        self.sign(subject, {:remove_spaces => true}, policy_options)
       end
 
 
@@ -125,27 +137,27 @@ module AWS
       # Public: Sign a url (as above) and HTML encode the result.
       #
       # Returns a String
-      def self.sign_url_safe(subject, policy_options = {}) 
-        self.sign(subject, {:remove_spaces => true, :html_escape => true}, policy_options) 
+      def self.sign_url_safe(subject, policy_options = {})
+        self.sign(subject, {:remove_spaces => true, :html_escape => true}, policy_options)
       end
 
-      # Public: Sign a stream path part or filename (spaces are allowed in stream paths 
+      # Public: Sign a stream path part or filename (spaces are allowed in stream paths
       # and so are not removed).
-      # 
+      #
       # Returns a String
       def self.sign_path(subject, policy_options ={})
-        self.sign(subject, {:remove_spaces => false}, policy_options) 
+        self.sign(subject, {:remove_spaces => false}, policy_options)
       end
 
       # Public: Sign a stream path or filename and HTML encode the result.
       #
       # Returns a String
       def self.sign_path_safe(subject, policy_options ={})
-        self.sign(subject, {:remove_spaces => false, :html_escape => true}, policy_options) 
+        self.sign(subject, {:remove_spaces => false, :html_escape => true}, policy_options)
       end
 
 
-      # Public: Sign a subject url or stream resource name with optional configuration and 
+      # Public: Sign a subject url or stream resource name with optional configuration and
       # policy options
       #
       # Returns a String
@@ -178,7 +190,7 @@ module AWS
         end
 
         if configuration_options[:html_escape]
-          return html_encode(result)    
+          return html_encode(result)
         else
           return result
         end
