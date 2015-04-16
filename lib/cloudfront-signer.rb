@@ -4,6 +4,7 @@ require 'openssl'
 require 'time'
 require 'base64'
 require "cloudfront-signer/version"
+require 'json'
 
 module AWS
   module CF
@@ -176,9 +177,10 @@ module AWS
           policy = IO.read(policy_options[:policy_file])
           result = "#{subject}#{separator}Policy=#{encode_policy(policy)}&Signature=#{create_signature(policy)}&Key-Pair-Id=#{@key_pair_id}"
         else
+          policy_options[:expires] = epoch_time(policy_options[:expires] || Time.now + default_expires)
           if policy_options.keys.size <= 1
             # Canned Policy - shorter URL
-            expires_at = epoch_time(policy_options[:expires] || Time.now + self.default_expires)
+            expires_at = policy_options[:expires]
             policy = %({"Statement":[{"Resource":"#{subject}","Condition":{"DateLessThan":{"AWS:EpochTime":#{expires_at}}}}]})
             result = "#{subject}#{separator}Expires=#{expires_at}&Signature=#{create_signature(policy)}&Key-Pair-Id=#{@key_pair_id}"
           else
@@ -196,23 +198,27 @@ module AWS
         end
       end
 
-
       # Private helper methods
       private
 
-
       def self.generate_custom_policy(resource, options)
-        conditions = ["\"DateLessThan\":{\"AWS:EpochTime\":#{epoch_time(options[:expires])}}"]
-        conditions << "\"DateGreaterThan\":{\"AWS:EpochTime\":#{epoch_time(options[:starting])}}" if options[:starting]
-        conditions << "\"IpAddress\":{\"AWS:SourceIp\":\"#{options[:ip_range]}\"" if options[:ip_range]
-                %({"Statement":[{"Resource":"#{resource}","Condition":{#{conditions.join(',')}}}}]})
+        conditions = { 'DateLessThan' => { 'AWS:EpochTime' => epoch_time(options[:expires]) } }
+        conditions['DateGreaterThan'] = { 'AWS:EpochTime' => epoch_time(options[:starting]) } if options[:starting]
+        conditions['IpAddress'] = { 'AWS:SourceIp' => option[:ip_range] } if options[:ip_range]
+        {
+          'Statement' => [{
+            'Resource' => resource,
+            'Condition' => conditions
+          }]
+        }.to_json
       end
 
       def self.epoch_time(timelike)
         case timelike
         when String then Time.parse(timelike).to_i
         when Time   then timelike.to_i
-        else raise ArgumentError.new("Invalid argument - String or Time required - #{timelike.class} passed.")
+        when Fixnum then timelike
+        else raise ArgumentError.new("Invalid argument - String, Fixnum or Time required - #{timelike.class} passed.")
         end
       end
 
