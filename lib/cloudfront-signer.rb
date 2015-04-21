@@ -130,7 +130,7 @@ module AWS
       #
       # Returns a String
       def self.sign_url(subject, policy_options = {})
-        self.sign(subject, {:remove_spaces => true}, policy_options)
+        self.build_url(subject, {:remove_spaces => true}, policy_options)
       end
 
 
@@ -139,7 +139,7 @@ module AWS
       #
       # Returns a String
       def self.sign_url_safe(subject, policy_options = {})
-        self.sign(subject, {:remove_spaces => true, :html_escape => true}, policy_options)
+        self.build_url(subject, {:remove_spaces => true, :html_escape => true}, policy_options)
       end
 
       # Public: Sign a stream path part or filename (spaces are allowed in stream paths
@@ -147,25 +147,21 @@ module AWS
       #
       # Returns a String
       def self.sign_path(subject, policy_options ={})
-        self.sign(subject, {:remove_spaces => false}, policy_options)
+        self.build_url(subject, {:remove_spaces => false}, policy_options)
       end
 
       # Public: Sign a stream path or filename and HTML encode the result.
       #
       # Returns a String
       def self.sign_path_safe(subject, policy_options ={})
-        self.sign(subject, {:remove_spaces => false, :html_escape => true}, policy_options)
+        self.build_url(subject, {:remove_spaces => false, :html_escape => true}, policy_options)
       end
 
-
-      # Public: Sign a subject url or stream resource name with optional configuration and
+      # Public: Builds a signed url or stream resource name with optional configuration and
       # policy options
       #
       # Returns a String
-      def self.sign(subject, configuration_options = {}, policy_options = {})
-
-        raise "Configure using AWS::CF::Signer.configure before signing." unless self.is_configured?
-
+      def self.build_url(subject, configuration_options = {}, policy_options = {})
         # If the url or stream path already has a query string parameter - append to that.
         separator = subject =~ /\?/ ? '&' : '?'
 
@@ -173,29 +169,43 @@ module AWS
           subject.gsub!(/\s/, "%20")
         end
 
-        if policy_options[:policy_file]
-          policy = IO.read(policy_options[:policy_file])
-          result = "#{subject}#{separator}Policy=#{encode_policy(policy)}&Signature=#{create_signature(policy)}&Key-Pair-Id=#{@key_pair_id}"
-        else
-          policy_options[:expires] = epoch_time(policy_options[:expires] || Time.now + default_expires)
-          if policy_options.keys.size <= 1
-            # Canned Policy - shorter URL
-            expires_at = policy_options[:expires]
-            policy = %({"Statement":[{"Resource":"#{subject}","Condition":{"DateLessThan":{"AWS:EpochTime":#{expires_at}}}}]})
-            result = "#{subject}#{separator}Expires=#{expires_at}&Signature=#{create_signature(policy)}&Key-Pair-Id=#{@key_pair_id}"
-          else
-            # Custom Policy
-            resource = policy_options[:resource] || subject
-            policy = generate_custom_policy(resource, policy_options)
-            result = "#{subject}#{separator}Policy=#{encode_policy(policy)}&Signature=#{create_signature(policy)}&Key-Pair-Id=#{@key_pair_id}"
-          end
-        end
+        result = subject + separator + self.sign(subject, policy_options).collect{ |k,v| "#{k}=#{v}" }.join('&')
 
         if configuration_options[:html_escape]
           return html_encode(result)
         else
           return result
         end
+      end
+
+      # Public: Sign a subject url or stream resource name with optional policy options.
+      # It returns raw params to be used in urls or cookies
+      #
+      # Returns a Hash
+      def self.sign(subject, policy_options = {})
+        result = {}
+
+        if policy_options[:policy_file]
+          policy = IO.read(policy_options[:policy_file])
+          result['Policy'] = encode_policy(policy)
+        else
+          policy_options[:expires] = epoch_time(policy_options[:expires] || Time.now + default_expires)
+
+          if policy_options.keys.size <= 1
+            # Canned Policy - shorter URL
+            expires_at = policy_options[:expires]
+            policy = %({"Statement":[{"Resource":"#{subject}","Condition":{"DateLessThan":{"AWS:EpochTime":#{expires_at}}}}]})
+            result['Expires'] = expires_at
+          else
+            # Custom Policy
+            resource = policy_options[:resource] || subject
+            policy = generate_custom_policy(resource, policy_options)
+            result['Policy'] = encode_policy(policy)
+          end
+        end
+
+        result.merge 'Signature' => create_signature(policy),
+                     'Key-Pair-Id' => @key_pair_id
       end
 
       # Private helper methods
