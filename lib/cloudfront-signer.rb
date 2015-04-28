@@ -130,7 +130,7 @@ module AWS
       #
       # Returns a String
       def self.sign_url(subject, policy_options = {})
-        self.build_url(subject, {:remove_spaces => true}, policy_options)
+        self.sign(subject, {:remove_spaces => true}, policy_options)
       end
 
 
@@ -139,7 +139,7 @@ module AWS
       #
       # Returns a String
       def self.sign_url_safe(subject, policy_options = {})
-        self.build_url(subject, {:remove_spaces => true, :html_escape => true}, policy_options)
+        self.sign(subject, {:remove_spaces => true, :html_escape => true}, policy_options)
       end
 
       # Public: Sign a stream path part or filename (spaces are allowed in stream paths
@@ -147,21 +147,21 @@ module AWS
       #
       # Returns a String
       def self.sign_path(subject, policy_options ={})
-        self.build_url(subject, {:remove_spaces => false}, policy_options)
+        self.sign(subject, {:remove_spaces => false}, policy_options)
       end
 
       # Public: Sign a stream path or filename and HTML encode the result.
       #
       # Returns a String
       def self.sign_path_safe(subject, policy_options ={})
-        self.build_url(subject, {:remove_spaces => false, :html_escape => true}, policy_options)
+        self.sign(subject, {:remove_spaces => false, :html_escape => true}, policy_options)
       end
 
       # Public: Builds a signed url or stream resource name with optional configuration and
       # policy options
       #
       # Returns a String
-      def self.build_url(subject, configuration_options = {}, policy_options = {})
+      def self.sign(subject, configuration_options = {}, policy_options = {})
         # If the url or stream path already has a query string parameter - append to that.
         separator = subject =~ /\?/ ? '&' : '?'
 
@@ -169,7 +169,7 @@ module AWS
           subject.gsub!(/\s/, "%20")
         end
 
-        result = subject + separator + self.sign(subject, policy_options).collect{ |k,v| "#{k}=#{v}" }.join('&')
+        result = subject + separator + self.signed_params(subject, policy_options).collect{ |k,v| "#{k}=#{v}" }.join('&')
 
         if configuration_options[:html_escape]
           return html_encode(result)
@@ -182,7 +182,7 @@ module AWS
       # It returns raw params to be used in urls or cookies
       #
       # Returns a Hash
-      def self.sign(subject, policy_options = {})
+      def self.signed_params(subject, policy_options = {})
         result = {}
 
         if policy_options[:policy_file]
