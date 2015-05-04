@@ -1,4 +1,8 @@
 # cloudfront-signer
+## New Repository
+As discussed in [#5](https://github.com/58bits/cloudfront-signer/pull/5) the new home for this gem is [leonelgalan/cloudfront-signer](https://github.com/leonelgalan/cloudfront-signer). The new repository, won't be a fork, allowing users to post issues. 
+
+---
 
 See the [ChangeLog](https://github.com/58bits/cloudfront-signer/blob/master/ChangeLog.markdown) for details of this release.
 
