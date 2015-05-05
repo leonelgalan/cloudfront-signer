@@ -3,7 +3,7 @@
 require 'openssl'
 require 'time'
 require 'base64'
-require "cloudfront-signer/version"
+require 'cloudfront-signer/version'
 require 'json'
 
 module AWS
@@ -11,9 +11,8 @@ module AWS
     class Signer
       # Public non-inheritable class accessors
       class << self
-
-        # Public: Provides a configuration option to set the key_pair_id if it has not
-        # been inferred from the key_path
+        # Public: Provides a configuration option to set the key_pair_id if it
+        # has not been inferred from the key_path
         #
         # Examples
         #
@@ -34,12 +33,16 @@ module AWS
         #
         # Returns nothing.
         def key_path=(path)
-          raise ArgumentError.new("The signing key could not be found at #{path}") unless File.exists?(path)
+          unless File.exist?(path)
+            fail ArgumentError,
+                 "The signing key could not be found at #{path}"
+          end
           @key_path = path
-          self.key=(File.readlines(path).join(""))
+          self.key = File.readlines(path).join('')
         end
 
-        # Public: Provides a configuration option to set the key directly as a string e.g. as an ENV var
+        # Public: Provides a configuration option to set the key directly as a
+        # string e.g. as an ENV var
         #
         # Examples
         #
@@ -54,12 +57,10 @@ module AWS
         # Public: Provides an accessor to the key_path
         #
         # Returns a String value indicating the current setting
-        def key_path
-          @key_path
-        end
+        attr_reader :key_path
 
-
-        # Public: Provides a configuration option that sets the default_expires in milliseconds
+        # Public: Provides a configuration option that sets the default_expires
+        # in milliseconds
         #
         # Examples
         #
@@ -68,9 +69,7 @@ module AWS
         #   end
         #
         # Returns nothing.
-        def default_expires=(value)
-          @default_expires = value
-        end
+        attr_writer :default_expires
 
         # Public: Provides an accessor to the default_expires value
         #
@@ -78,7 +77,6 @@ module AWS
         def default_expires
           @default_expires ||= 3600
         end
-
 
         private
 
@@ -104,16 +102,20 @@ module AWS
       #
       # Returns nothing.
       def self.configure
-
         yield self if block_given?
 
-        raise ArgumentError.new("You must supply the path to a PEM format RSA key pair.") unless self.key_path || private_key
-
-        unless @key_pair_id
-          @key_pair_id = extract_key_pair_id(self.key_path)
-          raise ArgumentError.new("The Cloudfront signing key id could not be inferred from #{self.key_path}. Please supply the key pair id as a configuration argument.") unless @key_pair_id
+        unless key_path || private_key
+          fail ArgumentError,
+               'You must supply the path to a PEM format RSA key pair.'
         end
 
+        unless @key_pair_id
+          @key_pair_id = extract_key_pair_id(key_path)
+          fail ArgumentError,
+               'The Cloudfront signing key id could not be inferred from ' \
+               "#{key_path}. Please supply the key pair id as a " \
+               'configuration argument.' unless @key_pair_id
+        end
       end
 
       # Public: Provides a configuration check method which tests to see
@@ -121,55 +123,58 @@ module AWS
       #
       # Returns a Boolean value indicating that settings are present.
       def self.is_configured?
-        (self.key_pair_id.nil? || private_key.nil?) ? false : true
+        (key_pair_id.nil? || private_key.nil?) ? false : true
       end
 
-      # Public: Sign a url - encoding any spaces in the url before signing. CloudFront
-      # stipulates that signed URLs must not contain spaces (as opposed to stream
-      # paths/filenames which CAN contain spaces).
+      # Public: Sign a url - encoding any spaces in the url before signing.
+      # CloudFront stipulates that signed URLs must not contain spaces (as
+      # opposed to stream paths/filenames which CAN contain spaces).
       #
       # Returns a String
       def self.sign_url(subject, policy_options = {})
-        self.sign(subject, {:remove_spaces => true}, policy_options)
+        sign subject, { remove_spaces: true }, policy_options
       end
-
-
 
       # Public: Sign a url (as above) and HTML encode the result.
       #
       # Returns a String
       def self.sign_url_safe(subject, policy_options = {})
-        self.sign(subject, {:remove_spaces => true, :html_escape => true}, policy_options)
+        sign subject, { remove_spaces: true, html_escape: true }, policy_options
       end
 
-      # Public: Sign a stream path part or filename (spaces are allowed in stream paths
-      # and so are not removed).
+      # Public: Sign a stream path part or filename (spaces are allowed in
+      # stream paths and so are not removed).
       #
       # Returns a String
-      def self.sign_path(subject, policy_options ={})
-        self.sign(subject, {:remove_spaces => false}, policy_options)
+      def self.sign_path(subject, policy_options = {})
+        sign(subject, { remove_spaces: false }, policy_options)
       end
 
       # Public: Sign a stream path or filename and HTML encode the result.
       #
       # Returns a String
-      def self.sign_path_safe(subject, policy_options ={})
-        self.sign(subject, {:remove_spaces => false, :html_escape => true}, policy_options)
+      def self.sign_path_safe(subject, policy_options = {})
+        sign subject,
+             { remove_spaces: false, html_escape: true },
+             policy_options
       end
 
-      # Public: Builds a signed url or stream resource name with optional configuration and
-      # policy options
+      # Public: Builds a signed url or stream resource name with optional
+      # configuration and policy options
       #
       # Returns a String
       def self.sign(subject, configuration_options = {}, policy_options = {})
-        # If the url or stream path already has a query string parameter - append to that.
+        # If the url or stream path already has a query string parameter -
+        # append to that.
         separator = subject =~ /\?/ ? '&' : '?'
 
-        if configuration_options[:remove_spaces]
-          subject.gsub!(/\s/, "%20")
-        end
+        subject.gsub!(/\s/, '%20') if configuration_options[:remove_spaces]
 
-        result = subject + separator + self.signed_params(subject, policy_options).collect{ |k,v| "#{k}=#{v}" }.join('&')
+        result = subject +
+                 separator +
+                 signed_params(subject, policy_options).collect do |key, value|
+                   "#{key}=#{value}"
+                 end.join('&')
 
         if configuration_options[:html_escape]
           return html_encode(result)
@@ -178,8 +183,8 @@ module AWS
         end
       end
 
-      # Public: Sign a subject url or stream resource name with optional policy options.
-      # It returns raw params to be used in urls or cookies
+      # Public: Sign a subject url or stream resource name with optional policy
+      # options. It returns raw params to be used in urls or cookies
       #
       # Returns a Hash
       def self.signed_params(subject, policy_options = {})
@@ -189,12 +194,14 @@ module AWS
           policy = IO.read(policy_options[:policy_file])
           result['Policy'] = encode_policy(policy)
         else
-          policy_options[:expires] = epoch_time(policy_options[:expires] || Time.now + default_expires)
+          policy_options[:expires] = epoch_time(policy_options[:expires] ||
+                                                Time.now + default_expires)
 
           if policy_options.keys.size <= 1
             # Canned Policy - shorter URL
             expires_at = policy_options[:expires]
-            policy = %({"Statement":[{"Resource":"#{subject}","Condition":{"DateLessThan":{"AWS:EpochTime":#{expires_at}}}}]})
+            policy = '{"Statement":[{"Resource":"#{subject}","Condition":{' \
+                     '"DateLessThan":{"AWS:EpochTime":#{expires_at}}}}]}'
             result['Expires'] = expires_at
           else
             # Custom Policy
@@ -208,13 +215,23 @@ module AWS
                      'Key-Pair-Id' => @key_pair_id
       end
 
-      # Private helper methods
       private
 
       def self.generate_custom_policy(resource, options)
-        conditions = { 'DateLessThan' => { 'AWS:EpochTime' => epoch_time(options[:expires]) } }
-        conditions['DateGreaterThan'] = { 'AWS:EpochTime' => epoch_time(options[:starting]) } if options[:starting]
-        conditions['IpAddress'] = { 'AWS:SourceIp' => option[:ip_range] } if options[:ip_range]
+        conditions = {
+          'DateLessThan' => {
+            'AWS:EpochTime' => epoch_time(options[:expires])
+          }
+        }
+
+        conditions['DateGreaterThan'] = {
+          'AWS:EpochTime' => epoch_time(options[:starting])
+        } if options[:starting]
+
+        conditions['IpAddress'] = {
+          'AWS:SourceIp' => option[:ip_range]
+        } if options[:ip_range]
+
         {
           'Statement' => [{
             'Resource' => resource,
@@ -228,28 +245,33 @@ module AWS
         when String then Time.parse(timelike).to_i
         when Time   then timelike.to_i
         when Fixnum then timelike
-        else raise ArgumentError.new("Invalid argument - String, Fixnum or Time required - #{timelike.class} passed.")
+        else fail ArgumentError,
+                  'Invalid argument - String, Fixnum or Time required - ' \
+                  "#{timelike.class} passed."
         end
       end
 
       def self.encode_policy(policy)
-        url_encode(Base64.encode64(policy))
+        url_encode Base64.encode64(policy)
       end
 
       def self.create_signature(policy)
-        url_encode(Base64.encode64(private_key.sign(OpenSSL::Digest::SHA1.new, (policy))))
+        url_encode Base64.encode64(
+          private_key.sign(OpenSSL::Digest::SHA1.new, (policy))
+        )
       end
 
       def self.extract_key_pair_id(key_path)
-        File.basename(key_path) =~ /^pk-(.*).pem$/ ? $1 : nil
+        File.basename(key_path) =~ /^pk-(.*).pem$/ ? Regexp.last_match[1] : nil
       end
 
       def self.url_encode(s)
-        s.gsub('+','-').gsub('=','_').gsub('/','~').gsub(/\n/,'').gsub(' ','')
+        s.gsub('+', '-').gsub('=', '_').gsub('/', '~').gsub(/\n/, '')
+          .gsub(' ', '')
       end
 
       def self.html_encode(s)
-        return s.gsub('?', '%3F').gsub('=', '%3D').gsub('&', '%26')
+        s.gsub('?', '%3F').gsub('=', '%3D').gsub('&', '%26')
       end
     end
   end
