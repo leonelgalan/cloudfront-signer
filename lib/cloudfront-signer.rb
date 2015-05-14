@@ -6,7 +6,7 @@ require 'base64'
 require 'cloudfront-signer/version'
 require 'json'
 
-module AWS
+module Aws
   module CF
     class Signer
       # Public non-inheritable class accessors
@@ -16,7 +16,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.key_pair_id = "XXYYZZ"
         #   end
         #
@@ -27,7 +27,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.key_path = "/path/to/your/keyfile.pem"
         #   end
         #
@@ -46,7 +46,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.key = ENV.fetch('KEY')
         #   end
         # Returns nothing.
@@ -64,7 +64,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.default_expires = 3600
         #   end
         #
@@ -94,7 +94,7 @@ module AWS
       #
       # Examples
       #
-      #   AWS::CF::Signer.configure do |config|
+      #   Aws::CF::Signer.configure do |config|
       #     config.key_path = "/path/to/yourkeyfile.pem"
       #     config.key_pair_id  = "XXYYZZ"
       #     config.default_expires = 3600
@@ -228,7 +228,7 @@ module AWS
         } if options[:starting]
 
         conditions['IpAddress'] = {
-          'AWS:SourceIp' => option[:ip_range]
+          'AWS:SourceIp' => options[:ip_range]
         } if options[:ip_range]
 
         {
