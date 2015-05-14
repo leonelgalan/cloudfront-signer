@@ -43,32 +43,20 @@ Call the class `sign_url` or `sign_path` method with optional policy settings.
 Aws::CF::Signer.sign_url 'http://mydomain/path/to/my/content'
 ```
 
-or
-
-```ruby
-Aws::CF::Signer.sign_url 'http://mydomain/path/to/my/content', expires: Time.now + 600
-```
-
-Streaming paths can be signed with the `sign_path` method.
-
-```ruby
-Aws::CF::Signer.sign_path 'path/to/my/content'
-```
-
-or
-
 ```ruby
 Aws::CF::Signer.sign_path 'path/to/my/content', expires: Time.now + 600
 ```
 
-Raw parameters can be get with the `signed_params` method. See [commit message](https://github.com/leonelgalan/cloudfront-signer/commit/fedcc3182e32133e4bd0ad0b79c0106168896c91) for additional details.
-
-```ruby
-Aws::CF::Signer.sign_params 'path/to/my/content'
-```
 
 Both `sign_url` and `sign_path` have _safe_ versions that HTML encode the result allowing signed paths or urls to be placed in HTML markup. The 'non'-safe versions can be used for placing signed urls or paths in JavaScript blocks or Flash params.
 
+___
+
+Call class method `signed_params` to get raw parameters. These values can be used to set signing cookies ([Serving Private Content through CloudFront: Using Signed Cookies](http://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-signed-cookies.html)). See [commit message](https://github.com/leonelgalan/cloudfront-signer/commit/fedcc3182e32133e4bd0ad0b79c0106168896c91) for additional details.
+
+```ruby
+Aws::CF::Signer.signed_params 'path/to/my/content'
+```
 
 ### Custom Policies
 
