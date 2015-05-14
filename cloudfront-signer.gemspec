@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
                   'private content. Includes specific signing methods for ' \
                   "both url and streaming paths, including html 'safe' " \
                   'escaped versions of each.'
+  s.license = 'MIT'
 
   s.rubyforge_project = 'cloudfront-signer'
   s.add_development_dependency 'rspec'
