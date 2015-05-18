@@ -6,7 +6,7 @@ require 'base64'
 require 'cloudfront-signer/version'
 require 'json'
 
-module AWS
+module Aws
   module CF
     class Signer
       # Public non-inheritable class accessors
@@ -16,7 +16,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.key_pair_id = "XXYYZZ"
         #   end
         #
@@ -27,7 +27,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.key_path = "/path/to/your/keyfile.pem"
         #   end
         #
@@ -46,7 +46,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.key = ENV.fetch('KEY')
         #   end
         # Returns nothing.
@@ -64,7 +64,7 @@ module AWS
         #
         # Examples
         #
-        #   AWS::CF::Signer.configure do |config|
+        #   Aws::CF::Signer.configure do |config|
         #     config.default_expires = 3600
         #   end
         #
@@ -94,7 +94,7 @@ module AWS
       #
       # Examples
       #
-      #   AWS::CF::Signer.configure do |config|
+      #   Aws::CF::Signer.configure do |config|
       #     config.key_path = "/path/to/yourkeyfile.pem"
       #     config.key_pair_id  = "XXYYZZ"
       #     config.default_expires = 3600
@@ -132,14 +132,14 @@ module AWS
       #
       # Returns a String
       def self.sign_url(subject, policy_options = {})
-        sign subject, { remove_spaces: true }, policy_options
+        build_url subject, { remove_spaces: true }, policy_options
       end
 
       # Public: Sign a url (as above) and HTML encode the result.
       #
       # Returns a String
       def self.sign_url_safe(subject, policy_options = {})
-        sign subject, { remove_spaces: true, html_escape: true }, policy_options
+        build_url subject, { remove_spaces: true, html_escape: true }, policy_options
       end
 
       # Public: Sign a stream path part or filename (spaces are allowed in
@@ -147,23 +147,23 @@ module AWS
       #
       # Returns a String
       def self.sign_path(subject, policy_options = {})
-        sign subject, { remove_spaces: false }, policy_options
+        build_url subject, { remove_spaces: false }, policy_options
       end
 
       # Public: Sign a stream path or filename and HTML encode the result.
       #
       # Returns a String
       def self.sign_path_safe(subject, policy_options = {})
-        sign subject,
-             { remove_spaces: false, html_escape: true },
-             policy_options
+        build_url subject,
+                  { remove_spaces: false, html_escape: true },
+                  policy_options
       end
 
       # Public: Builds a signed url or stream resource name with optional
       # configuration and policy options
       #
       # Returns a String
-      def self.sign(subject, configuration_options = {}, policy_options = {})
+      def self.build_url(subject, configuration_options = {}, policy_options = {})
         # If the url or stream path already has a query string parameter -
         # append to that.
         separator = subject =~ /\?/ ? '&' : '?'
@@ -228,7 +228,7 @@ module AWS
         } if options[:starting]
 
         conditions['IpAddress'] = {
-          'AWS:SourceIp' => option[:ip_range]
+          'AWS:SourceIp' => options[:ip_range]
         } if options[:ip_range]
 
         {

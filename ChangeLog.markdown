@@ -1,3 +1,7 @@
+### 3.0.0 / 2015-03-14
+* Renames namespace to `Aws`. Matches used by latest _https://github.com/aws/aws-sdk-ruby_. Change proposed by https://github.com/tennantje
+* Renames `sign` to `build_url` to better communicate method intent.
+
 ### 2.2.0 / 2015-04-29
 * Accepted merge request from https://github.com/leonelgalan - `sign_params` method returns raw params to be used in urls or cookies.
 

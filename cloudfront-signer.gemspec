@@ -4,7 +4,7 @@ require 'cloudfront-signer/version'
 
 Gem::Specification.new do |s|
   s.name = 'cloudfront-signer'
-  s.version = AWS::CF::VERSION
+  s.version = Aws::CF::VERSION
   s.authors = ['Anthony Bouch', 'Leonel Galan']
   s.email = ['tony@58bits.com', 'leonelgalan@gmail.com']
   s.homepage = 'http://github.com/leonelgalan/cloudfront-signer'
