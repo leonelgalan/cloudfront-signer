@@ -228,7 +228,7 @@ module AWS
         } if options[:starting]
 
         conditions['IpAddress'] = {
-          'AWS:SourceIp' => option[:ip_range]
+          'AWS:SourceIp' => options[:ip_range]
         } if options[:ip_range]
 
         {
