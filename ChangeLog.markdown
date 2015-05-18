@@ -1,3 +1,6 @@
+### 2.2.1 / 2015-04-29
+* Fixes policy generation when specifying an ip_range. See https://github.com/leonelgalan/cloudfront-signer/commit/18b19cc2f833850f360a92f4e244358601bba5ec#commitcomment-11249140 for details.
+
 ### 2.2.0 / 2015-04-29
 * Accepted merge request from https://github.com/leonelgalan - `sign_params` method returns raw params to be used in urls or cookies.
 
