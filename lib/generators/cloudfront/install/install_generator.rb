@@ -7,8 +7,8 @@ module Cloudfront
 
     desc 'This generator creates an initializer file at config/initializers'
     def add_initializer
-      template 'cloudfront-signer.rb',
-               'config/initializers/cloudfront-signer.rb'
+      template 'cloudfront_signer.rb',
+               'config/initializers/cloudfront_signer.rb'
     end
   end
 end
