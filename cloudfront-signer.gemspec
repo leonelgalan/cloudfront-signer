@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   s.rubyforge_project = 'cloudfront-signer'
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'codeclimate-test-reporter'
+  s.add_development_dependency 'rspec', '~> 3.4'
+  s.add_development_dependency 'codeclimate-test-reporter', '~> 0.4'
   s.files = `git ls-files`.split("\n")
   s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables = `git ls-files -- bin/*`.split("\n")
