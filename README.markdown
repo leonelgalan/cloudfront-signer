@@ -24,7 +24,7 @@ bundle exec rails generate cloudfront:install
 
 and customizing the resulting _config/initializers/cloudfront-signer.rb_ file.
 
-### Generated _cloudfront-signer.rb_
+### Generated _cloudfront_signer.rb_
 
 ```ruby
 Aws::CF::Signer.configure do |config|
