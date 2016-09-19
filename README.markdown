@@ -67,7 +67,6 @@ url = Aws::CF::Signer.sign_url 'http://d604721fxaaqy9.cloudfront.net/training/or
                                expires: 'Sat, 14 Nov 2009 22:20:00 GMT',
                                resource: 'http://d604721fxaaqy9.cloudfront.net/training/*',
                                ip_range: '145.168.143.0/24'
-)
 ```
 
 See Example Custom Policy 2 at above AWS doc link
