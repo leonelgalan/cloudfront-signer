@@ -64,6 +64,11 @@ describe Aws::CF::Signer do
     end
 
     describe 'when signing a url' do
+      it 'should not modify the passed url' do
+        url = 'http://somedomain.com/sign me'.freeze
+        expect(Aws::CF::Signer.sign_url(url)).not_to match(/\s/)
+      end
+
       it 'should remove spaces from the url' do
         url = 'http://somedomain.com/sign me'
         expect(Aws::CF::Signer.sign_url(url)).not_to match(/\s/)
