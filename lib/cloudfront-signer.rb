@@ -163,7 +163,8 @@ module Aws
       # configuration and policy options
       #
       # Returns a String
-      def self.build_url(subject, configuration_options = {}, policy_options = {})
+      def self.build_url(original_subject, configuration_options = {}, policy_options = {})
+        subject = original_subject.dup
         # If the url or stream path already has a query string parameter -
         # append to that.
         separator = subject =~ /\?/ ? '&' : '?'
