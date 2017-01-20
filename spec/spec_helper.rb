@@ -1,5 +1,5 @@
-require 'codeclimate-test-reporter'
-CodeClimate::TestReporter.start
+require 'simplecov'
+SimpleCov.start
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
@@ -13,8 +13,4 @@ def get_query_value(url, key)
   pairs.each do |item|
     return item.split('=')[1] if item.start_with?(key)
   end
-end
-
-RSpec.configure do |_config|
-
 end
