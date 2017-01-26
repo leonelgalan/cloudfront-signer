@@ -12,14 +12,42 @@ RSpec.shared_examples 'is configured' do
   end
 end
 
+FILES_PATH = File.expand_path(File.dirname(__FILE__) + '/files')
+KEY_PAIR_ID = 'APKAIKUROOUNR2BAFUUU'.freeze
+
 RSpec.describe Aws::CF::Signer do
-  let(:key_pair_id) { 'APKAIKUROOUNR2BAFUUU' }
-  let(:key_path) do
-    File.expand_path File.dirname(__FILE__) + "/keys/pk-#{key_pair_id}.pem"
-  end
+  let(:key_path) { FILES_PATH + "/pk-#{KEY_PAIR_ID}.pem" }
+  let(:other_key_path) { FILES_PATH + '/private_key.pem' }
   let(:key) { File.readlines(key_path).join '' }
 
-  describe 'defaults' do
+  describe 'Errors' do
+    it 'raises ArgumentError when invalid path is passed to key_path' do
+      expect do
+        Aws::CF::Signer.configure { |config| config.key_path = 'foo/bar' }
+      end.to raise_error ArgumentError
+    end
+
+    it 'raises OpenSSL::PKey::RSAError when invalid key is passed' do
+      expect do
+        Aws::CF::Signer.configure { |config| config.key = '' }
+      end.to raise_error OpenSSL::PKey::RSAError
+    end
+
+    it 'raises ArgumentError when no key is provided through private_key' do
+      expect do
+        Aws::CF::Signer.configure { |_config| }
+      end.to raise_error ArgumentError
+    end
+
+    it "raises ArgumentError when no key is provided through key_path doesn't" \
+         'allow to guess key_pair_id' do
+      expect do
+        Aws::CF::Signer.configure { |config| config.key_path = other_key_path }
+      end.to raise_error ArgumentError
+    end
+  end
+
+  describe 'Defaults' do
     it 'expire urls and paths in one hour by default' do
       expect(Aws::CF::Signer.default_expires).to eq 3600
     end
@@ -31,10 +59,10 @@ RSpec.describe Aws::CF::Signer do
     end
   end
 
-  context 'configured with key and key_pair_id' do
+  context 'When configured with key and key_pair_id' do
     before do
       Aws::CF::Signer.configure do |config|
-        config.key_pair_id = key_pair_id
+        config.key_pair_id = KEY_PAIR_ID
         config.key = key
       end
     end
@@ -42,7 +70,7 @@ RSpec.describe Aws::CF::Signer do
     include_examples 'is configured'
   end
 
-  context 'configured with key_path' do
+  context 'When configured with key_path' do
     before(:each) do
       Aws::CF::Signer.configure { |config| config.key_path = key_path }
     end
@@ -52,31 +80,24 @@ RSpec.describe Aws::CF::Signer do
     end
 
     describe 'when signing a url' do
+      let(:url) { 'https://example.com/someresource?opt1=one&opt2=two' }
+      let(:url_with_spaces) { 'http://example.com/sign me' }
+
       it "doesn't modifies the passed url" do
-        url = 'http://somedomain.com/sign'.freeze
+        url = 'http://example.com/'.freeze
         expect(Aws::CF::Signer.sign_url(url)).not_to match(/\s/)
       end
 
       it 'removes spaces' do
-        url = 'http://somedomain.com/sign me'
-        expect(Aws::CF::Signer.sign_url(url)).not_to match(/\s/)
+        expect(Aws::CF::Signer.sign_url(url_with_spaces)).not_to match(/\s/)
       end
 
       it "doesn't HTML encode the signed url by default" do
-        url = 'http://somedomain.com/someresource?opt1=one&opt2=two'
         expect(Aws::CF::Signer.sign_url(url)).to match(/\?|=|&/)
       end
 
       it 'HTML encodes the signed url when using sign_url_safe' do
-        url = 'http://somedomain.com/someresource?opt1=one&opt2=two'
         expect(Aws::CF::Signer.sign_url_safe(url)).not_to match(/\?|=|&/)
-      end
-
-      it 'expires when specified inline' do
-        url = 'http://somedomain.com/sign'
-        signed_url = Aws::CF::Signer.sign_url(url, expires: Time.now + 600)
-        expires_value = get_query_value(signed_url, 'Expires').to_i
-        expect(expires_value).to eq(Time.now.to_i + 600)
       end
     end
 
@@ -84,6 +105,57 @@ RSpec.describe Aws::CF::Signer do
       it "doesn't remove spaces" do
         path = '/prefix/sign me'
         expect(Aws::CF::Signer.sign_path(path)).to match(/\s/)
+      end
+
+      it 'HTML encodes the signed path when using sign_url_safe' do
+        path = '/prefix/sign me?'
+        expect(Aws::CF::Signer.sign_path_safe(path)).not_to match(/\?|=|&/)
+      end
+    end
+
+    describe ':expires option' do
+      subject(:sign_url) { Aws::CF::Signer.sign_url '', expires: expires }
+
+      { 'Time' => Time.now,
+        'String' => '2018-01-01',
+        'Fixnum' => 1_514_782_800,
+        'NilClass' => nil }.each do |klass, value|
+        context "as a #{klass}" do
+          let(:expires) { value }
+          it "doesn't raise an error" do
+            expect { subject }.not_to raise_error
+          end
+        end
+      end
+
+      context 'not as a String, Fixnum or Time' do
+        let(:expires) { [[], {}, true, 1.0].sample }
+        it 'raises ArgumentError' do
+          expect { subject }.to raise_error ArgumentError
+        end
+      end
+    end
+
+    describe 'Custom Policy' do
+      it 'builds policy from policy_options' do
+        signed_url = Aws::CF::Signer.sign_url(
+          'https://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
+          starting: 'Thu, 30 Apr 2009 06:43:10 GMT',
+          expires: 'Fri, 16 Oct 2009 06:31:56 GMT',
+          resource: 'https://d84l721fxaaqy9.cloudfront.net/downloads/',
+          ip_range: '216.98.35.1/32'
+        )
+        policy_value = get_query_value(signed_url, 'Policy')
+        expect(policy_value).not_to be_empty
+      end
+
+      it 'builds policy from policy_file' do
+        signed_url = Aws::CF::Signer.sign_url(
+          'https://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
+          policy_file: FILES_PATH + '/custom_policy.json'
+        )
+        policy_value = get_query_value(signed_url, 'Policy')
+        expect(policy_value).not_to be_empty
       end
     end
   end
