@@ -169,7 +169,7 @@ module Aws
         # append to that.
         separator = subject =~ /\?/ ? '&' : '?'
 
-        subject.gsub!(/\s/, '%20') if configuration_options[:remove_spaces]
+        subject.gsub!(/\s/, '%20') if configuration_options[:remove_spaces] and !subject.frozen?
 
         result = subject +
                  separator +
