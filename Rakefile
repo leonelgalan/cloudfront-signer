@@ -8,3 +8,14 @@ RSpec::Core::RakeTask.new(:spec) do |t|
 end
 
 task default: :spec
+
+require 'rdoc/task'
+
+Rake::RDocTask.new do |rdoc|
+  rdoc.main = 'README.md'
+  rdoc.rdoc_files.include %w(README.md LICENSE lib/cloudfront-signer.rb)
+  rdoc.rdoc_dir = 'doc'
+  rdoc.options << '--line-numbers'
+  rdoc.options << '--coverage-report'
+  rdoc.markup = 'markdown'
+end
