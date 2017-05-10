@@ -116,7 +116,7 @@ RSpec.describe Aws::CF::Signer do
         expect(Aws::CF::Signer.sign_path_safe(path)).not_to match(/\?|=|&/)
       end
 
-      it 'URL encodes the signed path when using sign_url_escaped' do
+      it 'URL encodes the signed path when using sign_path_escaped' do
         path = '/préfix/sign me?'
         expect(Aws::CF::Signer.sign_path_escaped(path)).not_to match(/[é ]+/)
       end
