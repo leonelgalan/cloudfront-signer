@@ -118,7 +118,7 @@ RSpec.describe Aws::CF::Signer do
 
       { 'Time' => Time.now,
         'String' => '2018-01-01',
-        'Fixnum' => 1_514_782_800,
+        'Integer' => 1_514_782_800,
         'NilClass' => nil }.each do |klass, value|
         context "as a #{klass}" do
           let(:expires) { value }
@@ -128,7 +128,7 @@ RSpec.describe Aws::CF::Signer do
         end
       end
 
-      context 'not as a String, Fixnum or Time' do
+      context 'not as a String, Integer or Time' do
         let(:expires) { [[], {}, true, 1.0].sample }
         it 'raises ArgumentError' do
           expect { subject }.to raise_error ArgumentError

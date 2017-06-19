@@ -1,3 +1,4 @@
+.idea/*
 *.gem
 .bundle
 Gemfile.lock
@@ -5,3 +6,5 @@ pkg/*
 
 coverage
 doc
+.ruby-gemset
+

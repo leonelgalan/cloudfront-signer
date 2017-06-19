@@ -244,9 +244,9 @@ module Aws
         case timelike
         when String then Time.parse(timelike).to_i
         when Time   then timelike.to_i
-        when Fixnum then timelike
+        when Integer then timelike
         else fail ArgumentError,
-                  'Invalid argument - String, Fixnum or Time required - ' \
+                  'Invalid argument - String, Integer or Time required - ' \
                   "#{timelike.class} passed."
         end
       end
