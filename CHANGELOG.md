@@ -1,5 +1,10 @@
 # Change Log
 
+## 3.0.2 / 2017-06-22
+
+* Provides an option to URI escape the path before signing it. Issue and accepted PR from [@mynock](https://github.com/mynock)
+* Replaces Fixnum with Integer for Ruby 2.4.1. Issue and accepted PR from [@scott-knight](https://github.com/scott-knight)
+
 ## 3.0.1 / 2017-01-20
 
 * Supports signing frozen strings. Bug reported by [@alexandermayr](https://github.com/alexandermayr).
