@@ -142,6 +142,13 @@ module Aws
         build_url subject, { remove_spaces: true, html_escape: true }, policy_options
       end
 
+      # Public: Sign a url (as above) but URI encode the string first.
+      #
+      # Returns a String
+      def self.sign_url_escaped(subject, policy_options = {})
+        build_url subject, { uri_escape: true }, policy_options
+      end
+
       # Public: Sign a stream path part or filename (spaces are allowed in
       # stream paths and so are not removed).
       #
@@ -159,6 +166,13 @@ module Aws
                   policy_options
       end
 
+      # Public: Sign a stream path or filename but URI encode the string first
+      #
+      # Returns a String
+      def self.sign_path_escaped(subject, policy_options = {})
+        build_url subject, { uri_escape: true }, policy_options
+      end
+
       # Public: Builds a signed url or stream resource name with optional
       # configuration and policy options
       #
@@ -170,6 +184,7 @@ module Aws
         separator = subject =~ /\?/ ? '&' : '?'
 
         subject.gsub!(/\s/, '%20') if configuration_options[:remove_spaces]
+        subject = URI.escape(subject) if configuration_options[:uri_escape]
 
         result = subject +
                  separator +

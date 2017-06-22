@@ -80,7 +80,7 @@ RSpec.describe Aws::CF::Signer do
     end
 
     describe 'when signing a url' do
-      let(:url) { 'https://example.com/someresource?opt1=one&opt2=two' }
+      let(:url) { 'https://example.com/somerésource?opt1=one&opt2=two' }
       let(:url_with_spaces) { 'http://example.com/sign me' }
 
       it "doesn't modifies the passed url" do
@@ -99,6 +99,10 @@ RSpec.describe Aws::CF::Signer do
       it 'HTML encodes the signed url when using sign_url_safe' do
         expect(Aws::CF::Signer.sign_url_safe(url)).not_to match(/\?|=|&/)
       end
+
+      it 'URL encodes the signed URL when using sign_url_escaped' do
+        expect(Aws::CF::Signer.sign_url_escaped(url)).not_to match(/é/)
+      end
     end
 
     describe 'when signing a path' do
@@ -107,9 +111,14 @@ RSpec.describe Aws::CF::Signer do
         expect(Aws::CF::Signer.sign_path(path)).to match(/\s/)
       end
 
-      it 'HTML encodes the signed path when using sign_url_safe' do
+      it 'HTML encodes the signed path when using sign_path_safe' do
         path = '/prefix/sign me?'
         expect(Aws::CF::Signer.sign_path_safe(path)).not_to match(/\?|=|&/)
+      end
+
+      it 'URL encodes the signed path when using sign_path_escaped' do
+        path = '/préfix/sign me?'
+        expect(Aws::CF::Signer.sign_path_escaped(path)).not_to match(/[é ]+/)
       end
     end
 
