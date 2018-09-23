@@ -87,6 +87,15 @@ url = Aws::CF::Signer.sign_url 'http://d604721fxaaqy9.cloudfront.net/training/or
                                ip_range: '145.168.143.0/24'
 ```
 
+With multiple resources
+
+```ruby
+url = Aws::CF::Signer.sign_url 'http://d604721fxaaqy9.cloudfront.net/training/orientation.avi',
+                               expires: 'Sat, 14 Nov 2009 22:20:00 GMT',
+                               resource: [ 'http://d604721fxaaqy9.cloudfront.net/training/*', 'http://d604721fxaaqy9.cloudfront.net/lessons/*' ],
+                               ip_range: '145.168.143.0/24'
+```
+
 See Example Custom Policy 2 at above AWS doc link
 
 ```ruby
@@ -94,6 +103,16 @@ Aws::CF::Signer.sign_url 'http://d84l721fxaaqy9.cloudfront.net/downloads/picture
                          starting: 'Thu, 30 Apr 2009 06:43:10 GMT',
                          expires: 'Fri, 16 Oct 2009 06:31:56 GMT',
                          resource: 'http://*',
+                         ip_range: '216.98.35.1/32'
+```
+
+With multiple resources
+
+```ruby
+Aws::CF::Signer.sign_url 'http://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
+                         starting: 'Thu, 30 Apr 2009 06:43:10 GMT',
+                         expires: 'Fri, 16 Oct 2009 06:31:56 GMT',
+                         resource: [ 'http://d604721fxaaqy9.cloudfront.net/training/*', 'http://d604721fxaaqy9.cloudfront.net/lessons/*' ],
                          ip_range: '216.98.35.1/32'
 ```
 
