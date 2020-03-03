@@ -248,10 +248,7 @@ module Aws
         } if options[:ip_range]
 
         {
-          'Statement' => [{
-            'Resource' => resource,
-            'Condition' => conditions
-          }]
+          'Statement' => build_resources(resource, conditions)
         }.to_json
       end
 
@@ -263,6 +260,15 @@ module Aws
         else fail ArgumentError,
                   'Invalid argument - String, Integer or Time required - ' \
                   "#{timelike.class} passed."
+        end
+      end
+
+      def self.build_resources(resource, conditions)
+        [ resource ].flatten.map do |r|
+          {
+            'Resource' => r,
+            'Condition' => conditions
+          }
         end
       end
 

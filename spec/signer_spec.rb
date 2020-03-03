@@ -158,6 +158,22 @@ RSpec.describe Aws::CF::Signer do
         expect(policy_value).not_to be_empty
       end
 
+      it 'builds policy from policy_options with multiple resources' do
+        resources = [
+          'https://d84l721fxaaqy9.cloudfront.net/downloads/',
+          'https://d84l721fxaaqy9.cloudfront.net/uploads/'
+        ]
+        signed_url = Aws::CF::Signer.sign_url(
+          'https://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
+          starting: 'Thu, 30 Apr 2009 06:43:10 GMT',
+          expires: 'Fri, 16 Oct 2009 06:31:56 GMT',
+          resource: resources,
+          ip_range: '216.98.35.1/32'
+        )
+        policy_value = get_query_value(signed_url, 'Policy')
+        expect(policy_value).not_to be_empty
+      end
+
       it 'builds policy from policy_file' do
         signed_url = Aws::CF::Signer.sign_url(
           'https://d84l721fxaaqy9.cloudfront.net/downloads/pictures.tgz',
