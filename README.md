@@ -23,7 +23,7 @@ url or path if it is being supplied to a JavaScript block or Flash object.
 
 ## Installation
 
-This gem has been publised as _cloudfront-signer_. Use `gem install
+This gem has been published as _cloudfront-signer_. Use `gem install
 cloudfront-signer` to install this gem.
 
 The signing class must be configured - supplying the path to a signing key, or
